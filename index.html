@@ -256,7 +256,9 @@
     height: 100px;
     display: flex; align-items: center; justify-content: center;
     font-size: 50px;
+    overflow: hidden;
   }
+  .adopt-card-img img { width:100%; height:100%; object-fit:cover; display:block; }
   .adopt-card-body { padding: 10px; }
   .adopt-card-body h4 { font-size: 14px; font-weight: 800; color: var(--text-main); }
   .adopt-card-body p { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
@@ -450,7 +452,9 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 56px;
     position: relative;
+    overflow: hidden;
   }
+  .dog-card-img img { width:100%; height:100%; object-fit:cover; display:block; }
   .dog-card-fav {
     position: absolute; top: 8px; right: 8px;
     width: 28px; height: 28px; border-radius: 50%;
@@ -476,7 +480,9 @@
     background: linear-gradient(145deg, #E8F5F5, #CBEBEE);
     display: flex; align-items: center; justify-content: center;
     font-size: 110px; position: relative;
+    overflow: hidden;
   }
+  .detail-hero img { width:100%; height:100%; object-fit:cover; display:block; }
   .back-btn {
     position: absolute; top: 50px; left: 16px;
     width: 36px; height: 36px; border-radius: 50%;
@@ -855,7 +861,7 @@
         <div class="section-title">En adopción cerca <a href="#" onclick="navTo('s-adopt');return false;">Ver todos →</a></div>
         <div class="h-scroll" style="margin-bottom:20px;">
           <div class="adopt-card" onclick="navTo('s-adopt')">
-            <div class="adopt-card-img" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">🦮</div>
+            <div class="adopt-card-img" style="background:#FEF3C7;"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=100&fit=crop" alt="Max"/></div>
             <div class="adopt-card-body">
               <h4>Max</h4>
               <p>3 años · Macho</p>
@@ -863,7 +869,7 @@
             </div>
           </div>
           <div class="adopt-card" onclick="navTo('s-adopt')">
-            <div class="adopt-card-img" style="background:linear-gradient(135deg,#E8F5F5,#C8E8EC);">🐕</div>
+            <div class="adopt-card-img" style="background:#E8F5F5;"><img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=200&h=100&fit=crop" alt="Luna"/></div>
             <div class="adopt-card-body">
               <h4>Luna</h4>
               <p>1 año · Hembra</p>
@@ -871,7 +877,7 @@
             </div>
           </div>
           <div class="adopt-card" onclick="navTo('s-adopt')">
-            <div class="adopt-card-img" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);">🐩</div>
+            <div class="adopt-card-img" style="background:#EDE9FE;"><img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=200&h=100&fit=crop" alt="Coco"/></div>
             <div class="adopt-card-body">
               <h4>Coco</h4>
               <p>Cachorro · M</p>
@@ -879,7 +885,7 @@
             </div>
           </div>
           <div class="adopt-card" onclick="navTo('s-adopt')">
-            <div class="adopt-card-img" style="background:linear-gradient(135deg,#FEE2E2,#FECACA);">🦴</div>
+            <div class="adopt-card-img" style="background:#FEE2E2;"><img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=200&h=100&fit=crop" alt="Rocky"/></div>
             <div class="adopt-card-body">
               <h4>Rocky</h4>
               <p>5 años · Macho</p>
@@ -1088,8 +1094,8 @@
         </div>
         <div class="dog-grid">
           <div class="dog-card" onclick="openDetail('max')">
-            <div class="dog-card-img" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">
-              🦮
+            <div class="dog-card-img" style="background:#FEF3C7;">
+              <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=110&fit=crop" alt="Max"/>
               <div class="dog-card-fav">❤️</div>
             </div>
             <div class="dog-card-body">
@@ -1102,8 +1108,8 @@
             </div>
           </div>
           <div class="dog-card" onclick="openDetail('luna')">
-            <div class="dog-card-img" style="background:linear-gradient(135deg,#E8F5F5,#C8E8EC);">
-              🐕
+            <div class="dog-card-img" style="background:#E8F5F5;">
+              <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=200&h=110&fit=crop" alt="Luna"/>
               <div class="dog-card-fav">🤍</div>
             </div>
             <div class="dog-card-body">
@@ -1116,8 +1122,8 @@
             </div>
           </div>
           <div class="dog-card" onclick="openDetail('coco')">
-            <div class="dog-card-img" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);">
-              🐩
+            <div class="dog-card-img" style="background:#EDE9FE;">
+              <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=200&h=110&fit=crop" alt="Coco"/>
               <div class="dog-card-fav">🤍</div>
             </div>
             <div class="dog-card-body">
@@ -1130,8 +1136,8 @@
             </div>
           </div>
           <div class="dog-card" onclick="openDetail('rocky')">
-            <div class="dog-card-img" style="background:linear-gradient(135deg,#FEE2E2,#FECACA);">
-              🦴
+            <div class="dog-card-img" style="background:#FEE2E2;">
+              <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=200&h=110&fit=crop" alt="Rocky"/>
               <div class="dog-card-fav">🤍</div>
             </div>
             <div class="dog-card-body">
@@ -1144,8 +1150,8 @@
             </div>
           </div>
           <div class="dog-card" onclick="openDetail('bella')">
-            <div class="dog-card-img" style="background:linear-gradient(135deg,#DCFCE7,#BBF7D0);">
-              🐾
+            <div class="dog-card-img" style="background:#DCFCE7;">
+              <img src="https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=200&h=110&fit=crop" alt="Bella"/>
               <div class="dog-card-fav">🤍</div>
             </div>
             <div class="dog-card-body">
@@ -1157,8 +1163,8 @@
             </div>
           </div>
           <div class="dog-card" onclick="openDetail('toby')">
-            <div class="dog-card-img" style="background:linear-gradient(135deg,#FEF9C3,#FEF08A);">
-              🐕‍🦺
+            <div class="dog-card-img" style="background:#FEF9C3;">
+              <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=200&h=110&fit=crop" alt="Toby"/>
               <div class="dog-card-fav">🤍</div>
             </div>
             <div class="dog-card-body">
@@ -1175,7 +1181,7 @@
       <!-- Dog Detail Overlay -->
       <div class="dog-detail" id="dog-detail">
         <div class="detail-hero" id="detail-hero">
-          🦮
+          <img id="detail-hero-img" src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=375&h=260&fit=crop" alt="Max"/>
           <button class="back-btn" onclick="closeDetail()">←</button>
         </div>
         <div class="detail-scroll">
@@ -1805,19 +1811,19 @@
 
   // Dog detail
   const dogs = {
-    max:   { name:'Max',   emoji:'🦮', loc:'Los Olivos', age:'3 años · Macho', bg:'linear-gradient(135deg,#FEF3C7,#FDE68A)', size:'Mediano', ste:'Sí', char:'Juguetón', story:'Max fue encontrado en un parque de Los Olivos hace 6 meses. A pesar de su pasado difícil, es un perro alegre y cariñoso que se lleva bien con niños. Busca una familia que le dé el amor que merece.' },
-    luna:  { name:'Luna',  emoji:'🐕', loc:'Miraflores',  age:'1 año · Hembra', bg:'linear-gradient(135deg,#E8F5F5,#C8E8EC)', size:'Pequeño', ste:'Sí', char:'Tierna',   story:'Luna llegó al albergue desnutrida pero recuperó su energía rápidamente. Es muy cariñosa y le encanta jugar. Ideal para familias con niños o personas solteras.' },
-    coco:  { name:'Coco',  emoji:'🐩', loc:'Surco',       age:'3 meses · Macho', bg:'linear-gradient(135deg,#EDE9FE,#DDD6FE)', size:'Pequeño', ste:'No', char:'Activo',   story:'Coco es un cachorro que fue encontrado abandonado en una bolsa en Surco. Está sano, vacunado y listo para encontrar su hogar para siempre.' },
-    rocky: { name:'Rocky', emoji:'🦴', loc:'Chorrillos',  age:'5 años · Macho', bg:'linear-gradient(135deg,#FEE2E2,#FECACA)', size:'Grande',  ste:'Sí', char:'Leal',     story:'Rocky es el perro que todos los rescatistas describen como \"el más leal\". Lleva 2 años en el albergue esperando una familia. Necesita un hogar con espacio y mucho amor.' },
-    bella: { name:'Bella', emoji:'🐾', loc:'SMP',         age:'2 años · Hembra', bg:'linear-gradient(135deg,#DCFCE7,#BBF7D0)', size:'Mediano', ste:'Sí', char:'Tranquila', story:'Bella es ideal para personas que buscan una compañía calmada. Le encanta pasear y dormir al sol. Excelente con adultos mayores.' },
-    toby:  { name:'Toby',  emoji:'🐕‍🦺', loc:'La Molina', age:'4 años · Macho', bg:'linear-gradient(135deg,#FEF9C3,#FEF08A)', size:'Grande',  ste:'Sí', char:'Enérgico',  story:'Toby necesita hogar URGENTE. El albergue está al límite de capacidad. Es un perro muy inteligente, ideal para familias activas con espacio exterior.' },
+    max:   { name:'Max',   img:'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=375&h=260&fit=crop', loc:'Los Olivos', age:'3 años · Macho', bg:'#FEF3C7', size:'Mediano', ste:'Sí', char:'Juguetón', story:'Max fue encontrado en un parque de Los Olivos hace 6 meses. A pesar de su pasado difícil, es un perro alegre y cariñoso que se lleva bien con niños. Busca una familia que le dé el amor que merece.' },
+    luna:  { name:'Luna',  img:'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=375&h=260&fit=crop', loc:'Miraflores',  age:'1 año · Hembra', bg:'#E8F5F5', size:'Pequeño', ste:'Sí', char:'Tierna',   story:'Luna llegó al albergue desnutrida pero recuperó su energía rápidamente. Es muy cariñosa y le encanta jugar. Ideal para familias con niños o personas solteras.' },
+    coco:  { name:'Coco',  img:'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=375&h=260&fit=crop', loc:'Surco',       age:'3 meses · Macho', bg:'#EDE9FE', size:'Pequeño', ste:'No', char:'Activo',   story:'Coco es un cachorro que fue encontrado abandonado en una bolsa en Surco. Está sano, vacunado y listo para encontrar su hogar para siempre.' },
+    rocky: { name:'Rocky', img:'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=375&h=260&fit=crop', loc:'Chorrillos',  age:'5 años · Macho', bg:'#FEE2E2', size:'Grande',  ste:'Sí', char:'Leal',     story:'Rocky es el perro que todos los rescatistas describen como "el más leal". Lleva 2 años en el albergue esperando una familia. Necesita un hogar con espacio y mucho amor.' },
+    bella: { name:'Bella', img:'https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=375&h=260&fit=crop', loc:'SMP',         age:'2 años · Hembra', bg:'#DCFCE7', size:'Mediano', ste:'Sí', char:'Tranquila', story:'Bella es ideal para personas que buscan una compañía calmada. Le encanta pasear y dormir al sol. Excelente con adultos mayores.' },
+    toby:  { name:'Toby',  img:'https://images.unsplash.com/photo-1552053831-71594a27632d?w=375&h=260&fit=crop', loc:'La Molina', age:'4 años · Macho', bg:'#FEF9C3', size:'Grande',  ste:'Sí', char:'Enérgico',  story:'Toby necesita hogar URGENTE. El albergue está al límite de capacidad. Es un perro muy inteligente, ideal para familias activas con espacio exterior.' },
   };
 
   function openDetail(id) {
     const d = dogs[id];
     document.getElementById('detail-hero').style.background = d.bg;
-    document.getElementById('detail-hero').querySelector('button').previousSibling.textContent = '';
-    document.getElementById('detail-hero').childNodes[0].textContent = d.emoji;
+    document.getElementById('detail-hero-img').src = d.img;
+    document.getElementById('detail-hero-img').alt = d.name;
     document.getElementById('detail-name').textContent = d.name;
     document.getElementById('detail-loc').textContent = d.loc;
     document.getElementById('detail-age').textContent = d.age;
@@ -1825,9 +1831,6 @@
     document.getElementById('detail-ste').textContent = d.ste;
     document.getElementById('detail-char').textContent = d.char;
     document.getElementById('detail-story').textContent = d.story;
-    const hero = document.getElementById('detail-hero');
-    // Set emoji properly
-    hero.innerHTML = d.emoji + '<button class="back-btn" onclick="closeDetail()">←</button>';
     document.getElementById('dog-detail').classList.add('open');
   }
 
