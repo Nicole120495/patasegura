@@ -625,16 +625,24 @@
     display: flex; align-items: center; justify-content: center;
   }
   /* FAB report button */
+  .nav-fab-wrapper {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer; flex: 1;
+    background: none; border: none; padding: 8px 12px;
+  }
   .nav-fab {
     width: 52px; height: 52px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--coral), #c85e42);
-    border: none; font-size: 26px; color: #fff; cursor: pointer;
+    background: var(--white);
+    border: none; font-size: 26px; cursor: pointer;
     box-shadow: 0 4px 16px rgba(231,111,81,0.45);
     display: flex; align-items: center; justify-content: center;
     transition: transform 0.15s;
     flex-shrink: 0;
   }
   .nav-fab:hover { transform: scale(1.08); }
+  .nav-fab-label {
+    font-size: 10px; font-weight: 700; color: var(--gray-4); font-family: var(--font-h);
+  }
 
   /* ===================== PREVIEW BANNER ===================== */
   .preview-info {
@@ -807,7 +815,7 @@
       <div class="feed-scroll">
 
         <!-- Alert urgent -->
-        <div class="alert-card" onclick="navTo('s-report')">
+        <div class="alert-card" style="cursor:default;">
           <div class="alert-icon">🚨</div>
           <div class="alert-text">
             <h3>Caso urgente en San Isidro</h3>
@@ -915,7 +923,10 @@
           <span class="nav-icon">🐶</span>
           <span class="nav-label">Adoptar</span>
         </button>
-        <button class="nav-fab" onclick="navTo('s-report')">🚨</button>
+        <button class="nav-fab-wrapper" onclick="navTo('s-report')">
+          <div class="nav-fab">🚨</div>
+          <span class="nav-fab-label">Reportar</span>
+        </button>
         <button class="nav-item" onclick="navTo('s-community')">
           <span class="nav-icon">🤝</span>
           <span class="nav-label">Comunidad</span>
@@ -1023,7 +1034,10 @@
       <div class="bottom-nav">
         <button class="nav-item" onclick="navTo('s-home')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></button>
         <button class="nav-item" onclick="navTo('s-adopt')"><span class="nav-icon">🐶</span><span class="nav-label">Adoptar</span></button>
-        <button class="nav-fab" style="background:linear-gradient(135deg,#028090,#02A896);">🐾</button>
+        <button class="nav-fab-wrapper" onclick="navTo('s-report')">
+          <div class="nav-fab">🚨</div>
+          <span class="nav-fab-label">Reportar</span>
+        </button>
         <button class="nav-item" onclick="navTo('s-community')"><span class="nav-icon">🤝</span><span class="nav-label">Comunidad</span></button>
         <button class="nav-item" onclick="navTo('s-profile')"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></button>
       </div>
