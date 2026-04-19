@@ -137,7 +137,7 @@
     opacity: 0.07;
   }
   .splash-bg-paws::before {
-    content: "🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾";
+    content: "🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶🐶";
     font-size: 40px;
     position: absolute;
     top: -20px; left: -20px;
@@ -498,11 +498,12 @@
   .trait .label { font-size: 11px; color: var(--text-sub); font-weight: 600; }
   .trait .value { font-size: 13px; color: var(--text-main); font-weight: 800; }
   .adopt-action-bar {
-    position: absolute; bottom: 80px; left: 0; right: 0;
-    padding: 12px 16px;
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 12px 16px 28px;
     background: var(--white);
     border-top: 1px solid var(--gray-2);
     display: flex; gap: 10px;
+    z-index: 25;
   }
   .adopt-primary-btn {
     flex: 1; padding: 14px; background: linear-gradient(135deg, var(--navy), var(--navy-mid));
@@ -673,7 +674,114 @@
     font-weight: 600;
     line-height: 1.5;
   }
-  .preview-info strong { color: var(--teal); }
+  /* Fix splash logo to accommodate 2 emojis */
+  .splash-logo { font-size: 50px !important; letter-spacing: 0; }
+
+  /* ===================== PHOTO UPLOAD POPUP ===================== */
+  .photo-popup-overlay {
+    position: absolute; inset: 0; z-index: 50;
+    background: rgba(0,0,0,0.55);
+    display: none; align-items: flex-end; justify-content: center;
+    animation: fadeIn 0.2s ease;
+  }
+  .photo-popup-overlay.open { display: flex; }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  .photo-popup {
+    background: var(--white); border-radius: 24px 24px 0 0;
+    padding: 20px 16px 36px; width: 100%;
+    animation: slideUpPop 0.3s ease;
+  }
+  @keyframes slideUpPop { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .photo-popup h3 { font-size: 16px; font-weight: 900; color: var(--text-main); margin-bottom: 4px; text-align:center; }
+  .photo-popup p { font-size: 12px; color: var(--text-sub); text-align: center; margin-bottom: 16px; }
+  .photo-options { display: flex; gap: 12px; margin-bottom: 16px; }
+  .photo-option {
+    flex: 1; border: 2.5px solid var(--gray-2); border-radius: var(--radius-md);
+    overflow: hidden; cursor: pointer; transition: border-color 0.2s;
+    position: relative;
+  }
+  .photo-option.selected { border-color: var(--teal); }
+  .photo-option img { width: 100%; height: 130px; object-fit: cover; display: block; }
+  .photo-option-check {
+    position: absolute; top: 8px; right: 8px;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--teal); color: #fff;
+    font-size: 13px; display: none; align-items: center; justify-content: center;
+    font-weight: 800;
+  }
+  .photo-option.selected .photo-option-check { display: flex; }
+  .photo-option-name { padding: 6px 8px; font-size: 11px; font-weight: 700; color: var(--text-sub); text-align: center; }
+  .upload-photo-btn {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-light));
+    color: #fff; border: none; border-radius: var(--radius-md);
+    font-family: var(--font-h); font-size: 15px; font-weight: 800; cursor: pointer;
+  }
+  .popup-cancel { width:100%; background:none; border:none; padding:10px; font-family:var(--font-h); font-size:13px; color:var(--text-sub); cursor:pointer; font-weight:600; margin-top:6px; }
+
+  /* ===================== MAPA LIMA SCREEN ===================== */
+  #s-map { background: #C8E8F0; }
+  .lima-map-container {
+    flex: 1; position: relative; overflow: hidden;
+  }
+  .lima-pin {
+    position: absolute; display: flex; flex-direction: column; align-items: center;
+    transform: translate(-50%, -100%);
+    cursor: pointer; z-index: 10;
+  }
+  .pin-bubble {
+    width: 32px; height: 32px; border-radius: 50% 50% 50% 0;
+    background: #E76F51; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+    transform: rotate(-45deg);
+    animation: pinBounce 2.5s ease-in-out infinite;
+  }
+  .pin-bubble > * { transform: rotate(45deg); }
+  @keyframes pinBounce { 0%,100%{transform:rotate(-45deg) translateY(0)} 50%{transform:rotate(-45deg) translateY(-4px)} }
+  .alert-pin:nth-child(2) .pin-bubble { animation-delay: 0.3s; }
+  .alert-pin:nth-child(3) .pin-bubble { animation-delay: 0.6s; }
+  .alert-pin:nth-child(4) .pin-bubble { animation-delay: 0.9s; }
+  .alert-pin:nth-child(5) .pin-bubble { animation-delay: 1.2s; }
+  .alert-pin:nth-child(6) .pin-bubble { animation-delay: 1.5s; }
+  .pin-label {
+    background: rgba(255,255,255,0.92); border-radius: 10px;
+    padding: 2px 7px; font-size: 9px; font-weight: 700; color: var(--navy);
+    margin-top: 4px; white-space: nowrap;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  }
+  /* User location */
+  .user-pin { z-index: 15; }
+  .user-pin-dot { position: relative; width: 36px; height: 36px; display:flex;align-items:center;justify-content:center; }
+  .user-pin-pulse {
+    position: absolute; width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(2,168,150,0.3);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{transform:scale(1);opacity:0.7} 50%{transform:scale(1.5);opacity:0.2} }
+  .user-pin-inner { font-size: 22px; z-index: 1; }
+  .user-pin-label { background: var(--teal); color: #fff; border-radius: 10px; padding: 2px 8px; font-size: 9px; font-weight: 800; margin-top: 4px; white-space:nowrap; }
+
+  /* Map legend box */
+  .map-legend-box {
+    position: absolute; bottom: 90px; left: 12px;
+    background: rgba(255,255,255,0.95); border-radius: 12px;
+    padding: 10px 12px; box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+    z-index: 20;
+  }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; color: var(--text-main); margin-bottom: 5px; }
+  .legend-item:last-child { margin-bottom: 0; }
+
+  /* Map back button */
+  .map-back-btn {
+    flex: 1; padding: 14px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-light));
+    color: #fff; border: none; border-radius: var(--radius-md);
+    font-family: var(--font-h); font-size: 14px; font-weight: 800; cursor: pointer;
+    margin: 8px 16px;
+  }
+
 </style>
 </head>
 <body>
@@ -702,9 +810,9 @@
       <div class="splash-bg-paws"></div>
       <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;">
         <div class="splash-content">
-          <div class="splash-logo">🐾</div>
-          <h1>PataSegura</h1>
-          <p>Conectamos quienes ayudan</p>
+          <div class="splash-logo">🐶</div>
+          <h1>Patas al rescate</h1>
+          <p>Salva una pata, salva una vida</p>
           <button class="splash-btn" onclick="navTo('s-home')">Comenzar →</button>
         </div>
       </div>
@@ -868,9 +976,10 @@
 
         <div class="form-group">
           <div class="form-label">📷 Foto del perro</div>
-          <div class="photo-upload">
-            <span>📸</span>
-            <p>Toca para subir una foto</p>
+          <div class="photo-upload" id="photo-upload-area" onclick="openPhotoPopup()">
+            <span id="photo-preview-icon">📸</span>
+            <p id="photo-upload-text">Toca para subir una foto</p>
+            <img id="photo-preview-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:8px;"/>
           </div>
         </div>
 
@@ -924,6 +1033,28 @@
           🚨 Enviar Reporte
         </button>
       </div>
+      <!-- Photo popup overlay -->
+      <div class="photo-popup-overlay" id="photo-popup">
+        <div class="photo-popup">
+          <h3>📷 Selecciona una foto</h3>
+          <p>Elige la foto del perro que deseas reportar</p>
+          <div class="photo-options">
+            <div class="photo-option" id="photo-opt-1" onclick="selectPhoto(1)">
+              <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=130&fit=crop" alt="Perro 1"/>
+              <div class="photo-option-check">✓</div>
+              <div class="photo-option-name">🐶 Labrador</div>
+            </div>
+            <div class="photo-option" id="photo-opt-2" onclick="selectPhoto(2)">
+              <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=200&h=130&fit=crop" alt="Perro 2"/>
+              <div class="photo-option-check">✓</div>
+              <div class="photo-option-name">🐕 Mestizo</div>
+            </div>
+          </div>
+          <button class="upload-photo-btn" onclick="confirmPhoto()">📤 Subir foto</button>
+          <button class="popup-cancel" onclick="closePhotoPopup()">Cancelar</button>
+        </div>
+      </div>
+
       <div class="bottom-nav">
         <button class="nav-item" onclick="navTo('s-home')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></button>
         <button class="nav-item" onclick="navTo('s-adopt')"><span class="nav-icon">🐶</span><span class="nav-label">Adoptar</span></button>
@@ -1078,7 +1209,7 @@
         </div>
         <div class="adopt-action-bar">
           <button class="adopt-primary-btn" onclick="alert('¡Solicitud enviada! Giannina te contactará pronto 🐾')">Solicitar Adopción</button>
-          <button class="adopt-secondary-btn">🏠</button>
+          <button class="adopt-secondary-btn" onclick="closeDetail();navTo('s-home')">🏠</button>
         </div>
       </div>
 
@@ -1121,7 +1252,7 @@
               <h4>14 casos activos</h4>
               <p>En los últimos 7 días</p>
             </div>
-            <button class="map-cta">Ver mapa</button>
+            <button class="map-cta" onclick="navTo('s-map')">Ver mapa</button>
           </div>
         </div>
 
@@ -1277,6 +1408,319 @@
       </div>
     </div>
 
+    <!-- ===== MAPA DE LIMA ===== -->
+    <div class="screen" id="s-map">
+      <div class="status-bar" style="color:#1D3557;">
+        <span class="time">9:41</span>
+        <div class="icons"><span>●●●</span><span>🔋</span></div>
+      </div>
+      <!-- Map full screen -->
+      <div class="lima-map-container">
+        <!--
+          MAPA GEOGRÁFICO REAL DE LIMA METROPOLITANA
+          Sistema de coordenadas mapeado desde lat/lon reales:
+          Bounding box aproximado:
+            Lon: -77.18 (oeste/costa) → -76.82 (este)  = 0.36 grados
+            Lat: -12.20 (sur/Chorrillos) → -11.85 (norte/Los Olivos) = 0.35 grados
+          
+          Transformación a píxeles (375×630):
+            x = (lon - (-77.18)) / 0.36 * 375
+            y = ((-11.85) - lat) / 0.35 * 630
+          
+          Distritos clave y sus coordenadas centrales reales:
+          - Lima Centro:   -77.028, -12.046  → x≈197, y≈171
+          - Miraflores:    -77.033, -12.120  → x≈195, y≈304
+          - San Isidro:    -77.042, -12.097  → x≈192, y≈263
+          - Barranco:      -77.020, -12.150  → x≈200, y≈359
+          - Chorrillos:    -77.010, -12.170  → x≈203, y≈395
+          - San Miguel:    -77.092, -12.077  → x≈173, y≈227
+          - Pueblo Libre:  -77.063, -12.075  → x≈183, y≈223
+          - Jesús María:   -77.050, -12.071  → x≈187, y≈215
+          - Lince:         -77.035, -12.080  → x≈193, y≈230
+          - San Borja:     -77.003, -12.105  → x≈205, y≈279
+          - Surco:         -76.993, -12.133  → x≈208, y≈330
+          - La Molina:     -76.940, -12.090  → x≈225, y≈251
+          - Ate:           -76.920, -12.026  → x≈231, y≈135
+          - SMP:           -77.065, -11.993  → x≈182, y≈60 (aprox)  
+          - Los Olivos:    -77.068, -11.970  → x≈181, y≈43
+          - Independencia: -77.037, -11.987  → x≈191, y≈73
+          - Comas:         -77.054, -11.940  → x≈186, y≈8
+          - El Agustino:   -77.004, -12.039  → x≈205, y≈160
+          - La Victoria:   -77.023, -12.065  → x≈199, y≈208
+          - Rímac:         -77.028, -12.028  → x≈197, y≈138
+        -->
+        <svg viewBox="0 0 375 630" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:calc(100% - 80px);position:absolute;top:0;left:0;">
+          <defs>
+            <filter id="mapshadow">
+              <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="rgba(0,0,0,0.18)"/>
+            </filter>
+            <!-- Subtle grid pattern -->
+            <pattern id="mapgrid" width="30" height="30" patternUnits="userSpaceOnUse">
+              <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(2,128,144,0.08)" stroke-width="0.8"/>
+            </pattern>
+          </defs>
+
+          <!-- Ocean / background -->
+          <rect width="375" height="630" fill="#B8DFF0"/>
+          <rect width="375" height="630" fill="url(#mapgrid)"/>
+
+          <!-- Océano Pacífico — queda a la IZQUIERDA (oeste) del mapa -->
+          <text x="18" y="340" fill="#5BA3BB" font-size="11" font-family="sans-serif" font-style="italic" opacity="0.75" transform="rotate(-90,18,340)">Océano Pacífico</text>
+
+          <!-- ═══ COSTA (línea litoral real de Lima: va diagonal NW→SE) ═══
+               Norte: Ancón ~-77.16, -11.77 → x=5, y=-44 (fuera de vista)
+               Ventanilla: -77.15, -11.87 → x=8, y=118 (top)
+               Callao: -77.14, -12.05 → x=11, y=262
+               San Miguel costa: -77.12, -12.08 → x=17, y=279
+               Miraflores costa: -77.05, -12.13 → x=35, y=368
+               Barranco costa:  -77.04, -12.15 → x=38, y=400
+               Chorrillos costa: -77.02, -12.18 → x=44, y=453
+               Lurín costa: -76.97, -12.28 → x=58, y=634 (bottom)
+          -->
+          <path d="M8,0 L12,50 L16,130 L20,200 L26,260 L32,310 L38,360 L42,400 L46,455 L52,540 L58,630 L0,630 L0,0 Z"
+                fill="#8ECFE0" opacity="0.5"/>
+          <!-- Costa highlight line -->
+          <polyline points="8,0 12,50 16,130 20,200 26,260 32,310 38,360 42,400 46,455 52,540 58,630"
+                    fill="none" stroke="#5BA3BB" stroke-width="2" opacity="0.7"/>
+
+          <!-- ═══ CALLAO (puerto, al noroeste) ═══ -->
+          <!-- Callao: lon≈-77.14...-77.11, lat≈-12.04...-12.07 → x≈11-22, y≈262-317 -->
+          <polygon points="8,250 38,244 42,268 44,300 36,316 20,318 10,305" 
+                   fill="#C5E0F8" stroke="#90B8D8" stroke-width="1.5"/>
+          <text x="14" y="287" fill="#1a4a6e" font-size="8" font-family="sans-serif" font-weight="bold">Callao</text>
+
+          <!-- ═══ COMAS (norte, interior) ═══ -->
+          <!-- Comas: ~-77.08 a -77.03, -11.91 a -11.96 → x≈163-180, y≈10-100 -->
+          <polygon points="152,0 220,0 226,28 222,68 210,80 188,76 165,72 158,48 152,20"
+                   fill="#DDF0D2" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="175" y="38" fill="#2D5016" font-size="8" font-family="sans-serif" font-weight="bold">Comas</text>
+
+          <!-- ═══ LOS OLIVOS (norte) ═══ -->
+          <!-- Los Olivos: ~-77.09 a -77.05, -11.96 a -11.99 → x≈160-173, y≈63-98 -->
+          <polygon points="152,68 188,76 192,100 186,120 162,122 148,105 148,80"
+                   fill="#D4EEC6" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="155" y="100" fill="#2D5016" font-size="8" font-family="sans-serif" font-weight="bold">Los Olivos</text>
+
+          <!-- ═══ INDEPENDENCIA ═══ -->
+          <!-- Independencia: ~-77.06 a -77.02, -11.97 a -12.00 → x≈173-184, y≈98-134 -->
+          <polygon points="188,76 222,68 228,98 224,118 204,122 192,118 186,100"
+                   fill="#E2F4D6" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="195" y="100" fill="#2D5016" font-size="8" font-family="sans-serif" font-weight="bold">Indep.</text>
+
+          <!-- ═══ SAN MARTÍN DE PORRES (norte-centro) ═══ -->
+          <!-- SMP: ~-77.10 a -77.06, -11.99 a -12.03 → x≈167-180, y≈98-168 -->
+          <polygon points="148,105 186,120 190,140 188,162 172,168 152,164 140,148 140,120"
+                   fill="#CCE8BA" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="148" y="140" fill="#2D5016" font-size="8" font-family="sans-serif" font-weight="bold">S.M.P.</text>
+
+          <!-- ═══ RÍMAC ═══ -->
+          <!-- Rímac: ~-77.04 a -77.01, -12.02 a -12.04 → x≈183-194, y≈130-168 -->
+          <polygon points="190,118 224,112 230,132 228,155 210,160 192,158 188,140"
+                   fill="#D8EEC8" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="198" y="140" fill="#2D5016" font-size="8" font-family="sans-serif" font-weight="bold">Rímac</text>
+
+          <!-- ═══ LIMA CENTRO (cercado) ═══ -->
+          <!-- Lima: ~-77.05 a -77.01, -12.04 a -12.07 → x≈183-194, y≈168-222 -->
+          <polygon points="140,148 188,162 192,158 228,155 234,175 230,210 218,218 196,220 172,218 152,210 140,192"
+                   fill="#C8E4B4" stroke="#8BBD80" stroke-width="1.5"/>
+          <text x="177" y="192" fill="#1a3a0a" font-size="9" font-family="sans-serif" font-weight="bold">Lima</text>
+
+          <!-- ═══ EL AGUSTINO ═══ -->
+          <!-- El Agustino: ~-76.99 a -76.97, -12.04 a -12.06 → x≈205-212, y≈168-202 -->
+          <polygon points="230,155 258,148 268,165 265,200 248,208 234,205 230,185"
+                   fill="#DDF0D0" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="233" y="182" fill="#2D5016" font-size="7" font-family="sans-serif" font-weight="bold">El Agust.</text>
+
+          <!-- ═══ ATE (este, grande) ═══ -->
+          <!-- Ate: ~-76.98 a -76.87, -12.00 a -12.08 → x≈208-249, y≈98-222 -->
+          <polygon points="258,100 320,90 345,105 350,145 342,185 330,210 310,220 290,215 268,208 265,175 260,140 255,110"
+                   fill="#E8F4DE" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="295" y="158" fill="#2D5016" font-size="9" font-family="sans-serif" font-weight="bold">Ate</text>
+
+          <!-- ═══ LA VICTORIA ═══ -->
+          <!-- La Victoria: ~-77.03 a -77.01, -12.06 a -12.09 → x≈183-190, y≈202-256 -->
+          <polygon points="196,218 230,210 236,228 234,250 218,258 200,258 194,240"
+                   fill="#D4ECC0" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="198" y="240" fill="#2D5016" font-size="7" font-family="sans-serif" font-weight="bold">La Victoria</text>
+
+          <!-- ═══ PUEBLO LIBRE ═══ -->
+          <!-- Pueblo Libre: ~-77.08 a -77.06, -12.07 a -12.09 → x≈175-183, y≈222-256 -->
+          <polygon points="140,192 172,218 178,222 180,248 172,258 156,260 142,250 136,228"
+                   fill="#C4E4B8" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="140" y="238" fill="#2D5016" font-size="7" font-family="sans-serif" font-weight="bold">Pueblo Libre</text>
+
+          <!-- ═══ JESÚS MARÍA ═══ -->
+          <!-- Jesús María: ~-77.06 a -77.04, -12.07 a -12.09 → x≈175-183, y≈222-256 -->
+          <polygon points="178,222 196,218 200,222 200,258 192,265 180,262 178,248"
+                   fill="#CCEAC0" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="178" y="243" fill="#2D5016" font-size="7" font-family="sans-serif" font-weight="bold">J.María</text>
+
+          <!-- ═══ LINCE ═══ -->
+          <!-- Lince: ~-77.04 a -77.02, -12.08 a -12.10 → x≈183-190, y≈256-292 -->
+          <polygon points="200,258 234,250 238,268 236,285 220,290 202,290 196,278"
+                   fill="#D8EEC8" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="204" y="277" fill="#2D5016" font-size="8" font-family="sans-serif" font-weight="bold">Lince</text>
+
+          <!-- ═══ SAN MIGUEL ═══ -->
+          <!-- San Miguel: ~-77.11 a -77.09, -12.08 a -12.10 → x≈156-165, y≈256-292 -->
+          <polygon points="136,228 156,224 170,228 172,258 166,272 154,278 138,272 130,255"
+                   fill="#D0ECC4" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="136" y="256" fill="#2D5016" font-size="7" font-family="sans-serif" font-weight="bold">San Miguel</text>
+
+          <!-- ═══ MAGDALENA DEL MAR ═══ -->
+          <!-- Magdalena: ~-77.09 a -77.07, -12.09 a -12.11 → x≈165-173, y≈278-314 -->
+          <polygon points="130,255 154,250 166,260 168,280 162,294 146,296 128,288"
+                   fill="#C8E8BC" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="130" y="276" fill="#2D5016" font-size="6.5" font-family="sans-serif" font-weight="bold">Magdalena</text>
+
+          <!-- ═══ SAN ISIDRO (entre costa y el centro) ═══ -->
+          <!-- San Isidro: ~-77.07 a -77.02, -12.09 a -12.12 → x≈169-184, y≈278-342 -->
+          <polygon points="162,278 196,270 202,272 210,280 210,318 205,330 188,335 172,330 160,318 158,298"
+                   fill="#B8DCAA" stroke="#8BBD80" stroke-width="1.5"/>
+          <text x="168" y="305" fill="#1a3a0a" font-size="8" font-family="sans-serif" font-weight="bold">San Isidro</text>
+
+          <!-- ═══ SAN BORJA ═══ -->
+          <!-- San Borja: ~-77.02 a -76.99, -12.10 a -12.13 → x≈190-201, y≈292-355 -->
+          <polygon points="210,278 248,268 260,285 260,320 252,340 238,348 218,345 208,330 208,300"
+                   fill="#C4E4B4" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="218" y="312" fill="#2D5016" font-size="8" font-family="sans-serif" font-weight="bold">San Borja</text>
+
+          <!-- ═══ SURQUILLO ═══ -->
+          <!-- Surquillo: ~-77.03 a -77.01, -12.11 a -12.13 → x≈183-190, y≈314-355 -->
+          <polygon points="196,318 212,318 216,342 212,358 196,358 190,340"
+                   fill="#D4ECBE" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="192" y="340" fill="#2D5016" font-size="7" font-family="sans-serif" font-weight="bold">Surquillo</text>
+
+          <!-- ═══ MIRAFLORES (costa centro-sur) ═══ -->
+          <!-- Miraflores: ~-77.05 a -77.01, -12.11 a -12.14 → x≈182-196, y≈314-378 -->
+          <polygon points="158,316 190,308 196,318 196,358 190,372 174,380 160,372 154,358 154,332"
+                   fill="#A8D898" stroke="#6BA858" stroke-width="1.5"/>
+          <text x="157" y="345" fill="#1a3a0a" font-size="8" font-family="sans-serif" font-weight="bold">Miraflores</text>
+
+          <!-- ═══ SANTIAGO DE SURCO (grande, al este de Miraflores) ═══ -->
+          <!-- Surco: ~-77.01 a -76.96, -12.13 a -12.18 → x≈196-215, y≈355-468 -->
+          <polygon points="212,340 260,320 280,332 285,365 282,405 268,430 250,445 232,445 215,432 205,408 202,375 208,355"
+                   fill="#D8EDCA" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="228" y="390" fill="#2D5016" font-size="8.5" font-family="sans-serif" font-weight="bold">Surco</text>
+
+          <!-- ═══ LA MOLINA (este, colinas) ═══ -->
+          <!-- La Molina: ~-76.97 a -76.90, -12.08 a -12.15 → x≈215-240, y≈222-378 -->
+          <polygon points="260,215 310,220 342,230 360,255 358,310 350,355 338,380 318,390 295,385 278,368 275,335 278,298 270,265 265,240"
+                   fill="#E0F0D5" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="300" y="295" fill="#2D5016" font-size="8.5" font-family="sans-serif" font-weight="bold">La Molina</text>
+
+          <!-- ═══ BARRANCO ═══ -->
+          <!-- Barranco: ~-77.02 a -77.00, -12.14 a -12.16 → x≈189-196, y≈378-430 -->
+          <polygon points="154,358 174,358 188,365 196,370 202,388 196,405 182,410 165,405 155,390 154,370"
+                   fill="#BCDDB0" stroke="#8BBD80" stroke-width="1.5"/>
+          <text x="157" y="390" fill="#1a3a0a" font-size="8" font-family="sans-serif" font-weight="bold">Barranco</text>
+
+          <!-- ═══ CHORRILLOS (sur, junto a la costa) ═══ -->
+          <!-- Chorrillos: ~-77.02 a -76.98, -12.15 a -12.22 → x≈188-203, y≈405-539 -->
+          <polygon points="154,390 165,405 196,405 215,415 232,445 235,490 225,530 205,550 188,548 170,530 155,505 148,465 146,430 148,408"
+                   fill="#B8D8A8" stroke="#8BBD80" stroke-width="1.5"/>
+          <text x="160" y="478" fill="#1a3a0a" font-size="8.5" font-family="sans-serif" font-weight="bold">Chorrillos</text>
+
+          <!-- ═══ VILLA MARÍA DEL TRIUNFO / VMT (sur-este) ═══ -->
+          <polygon points="235,445 268,430 285,450 295,490 285,535 262,550 240,548 225,530 232,490"
+                   fill="#DFF0D5" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="245" y="495" fill="#2D5016" font-size="7" font-family="sans-serif" font-weight="bold">V.M.T.</text>
+
+          <!-- ═══ VILLA EL SALVADOR (sur) ═══ -->
+          <polygon points="188,548 225,530 240,548 235,580 215,595 192,595 175,580 170,560"
+                   fill="#CCEAC0" stroke="#9CC88A" stroke-width="1.2"/>
+          <text x="190" y="568" fill="#2D5016" font-size="7" font-family="sans-serif" font-weight="bold">V.E.S.</text>
+
+          <!-- ═══ VÍAS PRINCIPALES ═══ -->
+          <!-- Vía Expresa / Paseo de la República (norte-sur por el centro-oeste) -->
+          <path d="M185,175 L183,230 L180,285 L178,340 L176,395 L173,450" 
+                fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="2.2" stroke-dasharray="6,3"/>
+          <!-- Av. Javier Prado (este-oeste, por el centro) -->
+          <path d="M145,280 L200,272 L240,268 L285,262 L330,258" 
+                fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.8" stroke-dasharray="5,3"/>
+          <!-- Panamericana Sur (norte-sur por el este) -->
+          <path d="M250,150 L255,230 L260,310 L262,395 L260,480 L255,560" 
+                fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" stroke-dasharray="4,4"/>
+          <!-- Av. Arequipa (diagonal) -->
+          <path d="M196,218 L192,260 L188,310 L185,360 L182,400" 
+                fill="none" stroke="rgba(255,220,150,0.7)" stroke-width="1.5" stroke-dasharray="6,3"/>
+
+          <!-- ═══ RÍO RÍMAC ═══ -->
+          <path d="M375,120 L340,128 L300,135 L258,148 L230,155 L200,162 L172,168 L145,178 L115,195 L85,215 L50,235"
+                fill="none" stroke="#7EC8E0" stroke-width="3" opacity="0.8"/>
+          <text x="78" y="226" fill="#3A90B0" font-size="7" font-family="sans-serif" font-style="italic">Río Rímac</text>
+
+          <!-- ═══ TÍTULO DEL MAPA ═══ -->
+          <rect x="8" y="8" width="162" height="26" rx="13" fill="rgba(255,255,255,0.93)" filter="url(#mapshadow)"/>
+          <text x="18" y="25" fill="#028090" font-size="11.5" font-family="sans-serif" font-weight="bold">📍 Lima Metropolitana</text>
+
+          <!-- Norte indicator -->
+          <circle cx="355" cy="24" r="14" fill="rgba(255,255,255,0.88)" filter="url(#mapshadow)"/>
+          <text x="350" y="20" fill="#028090" font-size="10" font-family="sans-serif" font-weight="bold">N</text>
+          <text x="352" y="33" fill="#028090" font-size="12">↑</text>
+        </svg>
+
+        <!-- ═══ PINS DE ALERTAS (posicionados según geografía real) ═══ -->
+
+        <!-- Pin Chorrillos: sur, junto a costa → ~top:69%, left:44% -->
+        <div class="lima-pin alert-pin" style="top:69%;left:44%;" onclick="alert('🚨 Chorrillos\nPerro herido en Av. Huaylas\nReportado hace 2h')">
+          <div class="pin-bubble">🚨</div>
+          <div class="pin-label">Chorrillos</div>
+        </div>
+
+        <!-- Pin Miraflores: costa centro-sur → ~top:52%, left:44% -->
+        <div class="lima-pin alert-pin" style="top:52%;left:44%;" onclick="alert('🐾 Miraflores\nPerro desnutrido en Parque Kennedy\nReportado hace 4h')">
+          <div class="pin-bubble" style="background:#F4A261;">🐾</div>
+          <div class="pin-label">Miraflores</div>
+        </div>
+
+        <!-- Pin Los Olivos: norte → ~top:14%, left:43% -->
+        <div class="lima-pin alert-pin" style="top:14%;left:43%;" onclick="alert('🚨 Los Olivos\nPerro extraviado con collar\nReportado hace 6h')">
+          <div class="pin-bubble">🚨</div>
+          <div class="pin-label">Los Olivos</div>
+        </div>
+
+        <!-- Pin San Borja: centro-este → ~top:47%, left:60% -->
+        <div class="lima-pin alert-pin" style="top:47%;left:60%;" onclick="alert('🐾 San Borja\nColonia de perros sin hogar\nReportado hace 1h')">
+          <div class="pin-bubble" style="background:#F4A261;">🐾</div>
+          <div class="pin-label">San Borja</div>
+        </div>
+
+        <!-- Pin La Molina: este → ~top:42%, left:78% -->
+        <div class="lima-pin alert-pin" style="top:42%;left:78%;" onclick="alert('🚨 La Molina\nPerro abandonado cerca al parque\nReportado hace 30min')">
+          <div class="pin-bubble">🚨</div>
+          <div class="pin-label">La Molina</div>
+        </div>
+
+        <!-- Pin Ate: este-norte → ~top:22%, left:75% -->
+        <div class="lima-pin alert-pin" style="top:22%;left:75%;" onclick="alert('🐾 Ate\nPerros en busca de hogar temporal\nReportado hace 3h')">
+          <div class="pin-bubble" style="background:#F4A261;">🐾</div>
+          <div class="pin-label">Ate</div>
+        </div>
+
+        <!-- Pin usuario: San Isidro → ~top:45%, left:47% -->
+        <div class="lima-pin user-pin" style="top:45%;left:47%;">
+          <div class="user-pin-dot">
+            <div class="user-pin-pulse"></div>
+            <div class="user-pin-inner">📍</div>
+          </div>
+          <div class="pin-label user-pin-label">Tú estás aquí</div>
+        </div>
+
+        <!-- Legend -->
+        <div class="map-legend-box">
+          <div class="legend-item"><span style="background:#E76F51;border-radius:50%;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;font-size:8px;">🚨</span> Caso urgente</div>
+          <div class="legend-item"><span style="background:#F4A261;border-radius:50%;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;font-size:8px;">🐾</span> Reporte activo</div>
+          <div class="legend-item"><span style="font-size:12px;">📍</span> Tu ubicación</div>
+        </div>
+      </div>
+
+      <!-- Bottom nav -->
+      <div class="bottom-nav" style="position:absolute;bottom:0;left:0;right:0;z-index:30;">
+        <button class="map-back-btn" onclick="navTo('s-community')">← Regresar a Comunidad</button>
+      </div>
+    </div>
+
   </div><!-- end phone -->
 
 
@@ -1288,7 +1732,8 @@
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.screen-nav button').forEach(b => b.classList.remove('active'));
     document.getElementById(id).classList.add('active');
-    document.getElementById('btn-' + id).classList.add('active');
+    const btn = document.getElementById('btn-' + id);
+    if (btn) btn.classList.add('active');
     // Close dog detail if switching away
     const detail = document.getElementById('dog-detail');
     if (detail) detail.classList.remove('open');
@@ -1296,6 +1741,50 @@
 
   function navTo(id) {
     showScreen(id);
+  }
+
+  // Photo popup
+  let selectedPhoto = null;
+  const photoUrls = {
+    1: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=200&fit=crop',
+    2: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=200&fit=crop'
+  };
+
+  function openPhotoPopup() {
+    document.getElementById('photo-popup').classList.add('open');
+    selectedPhoto = null;
+    document.getElementById('photo-opt-1').classList.remove('selected');
+    document.getElementById('photo-opt-2').classList.remove('selected');
+  }
+
+  function closePhotoPopup() {
+    document.getElementById('photo-popup').classList.remove('open');
+  }
+
+  function selectPhoto(num) {
+    selectedPhoto = num;
+    document.getElementById('photo-opt-1').classList.remove('selected');
+    document.getElementById('photo-opt-2').classList.remove('selected');
+    document.getElementById('photo-opt-' + num).classList.add('selected');
+  }
+
+  function confirmPhoto() {
+    if (!selectedPhoto) {
+      alert('Por favor selecciona una foto primero.');
+      return;
+    }
+    closePhotoPopup();
+    const area = document.getElementById('photo-upload-area');
+    const icon = document.getElementById('photo-preview-icon');
+    const text = document.getElementById('photo-upload-text');
+    const img = document.getElementById('photo-preview-img');
+    icon.style.display = 'none';
+    text.style.display = 'none';
+    img.src = photoUrls[selectedPhoto];
+    img.style.display = 'block';
+    area.style.height = '160px';
+    area.style.padding = '0';
+    area.style.border = '2px solid var(--teal)';
   }
 
   // Form interactions
