@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PataSegura — Prototipo App Móvil</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ===== DESIGN TOKENS ===== */
+  :root {
+    --teal:       #028090;
+    --teal-light: #02A896;
+    --teal-pale:  #E8F5F5;
+    --amber:      #F4A261;
+    --amber-light:#FFF0E0;
+    --coral:      #E76F51;
+    --navy:       #1D3557;
+    --navy-mid:   #2C4A6E;
+    --gray-1:     #F7FAFB;
+    --gray-2:     #ECF1F3;
+    --gray-3:     #C4D0D4;
+    --gray-4:     #8FA4AA;
+    --gray-5:     #4A6370;
+    --white:      #FFFFFF;
+    --text-main:  #1D3557;
+    --text-sub:   #5B7F8A;
+    --radius-sm:  10px;
+    --radius-md:  18px;
+    --radius-lg:  26px;
+    --shadow-sm:  0 2px 8px rgba(2,128,144,0.10);
+    --shadow-md:  0 6px 24px rgba(29,53,87,0.13);
+    --shadow-lg:  0 12px 40px rgba(29,53,87,0.18);
+    --font-h:     'Nunito', sans-serif;
+    --font-b:     'Lora', serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #E4EEF0;
+    font-family: var(--font-h);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10px 40px;
+  }
+
+  /* ===== PROTOTYPE SHELL ===== */
+  .proto-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* Navigation bar above phone */
+  .screen-nav {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .screen-nav button {
+    font-family: var(--font-h);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 13px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.7);
+    color: var(--gray-5);
+    letter-spacing: 0.4px;
+    transition: all 0.2s;
+  }
+  .screen-nav button.active {
+    background: var(--teal);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(2,128,144,0.3);
+  }
+  .screen-nav button:hover:not(.active) {
+    background: var(--white);
+    color: var(--teal);
+  }
+
+  /* Phone frame */
+  .phone {
+    width: 375px;
+    height: 812px;
+    background: var(--white);
+    border-radius: 48px;
+    box-shadow: var(--shadow-lg), 0 0 0 10px #1a2e3a, 0 0 0 12px #0f1e27;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 44px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 28px 0;
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 10;
+  }
+  .status-bar .time { font-size: 15px; font-weight: 800; color: inherit; }
+  .status-bar .icons { display: flex; gap: 5px; align-items: center; }
+  .status-bar .icons span { font-size: 12px; }
+
+  /* Screen container */
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .screen.active { display: flex; }
+
+  /* ===================== SCREEN 1: SPLASH ===================== */
+  #s-splash {
+    background: linear-gradient(160deg, #02A896 0%, #028090 45%, #1D3557 100%);
+    justify-content: center;
+    align-items: center;
+  }
+  .splash-bg-paws {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0.07;
+  }
+  .splash-bg-paws::before {
+    content: "🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾";
+    font-size: 40px;
+    position: absolute;
+    top: -20px; left: -20px;
+    width: 120%; height: 120%;
+    letter-spacing: 10px;
+    line-height: 70px;
+    word-break: break-all;
+    filter: blur(1px);
+    transform: rotate(-15deg);
+  }
+  .splash-content { text-align: center; color: #fff; position: relative; z-index: 2; }
+  .splash-logo {
+    width: 100px; height: 100px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 32px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 50px;
+    margin: 0 auto 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+  }
+  .splash-content h1 { font-size: 36px; font-weight: 900; letter-spacing: -1px; margin-bottom: 6px; }
+  .splash-content p { font-family: var(--font-b); font-style: italic; font-size: 15px; opacity: 0.85; margin-bottom: 50px; }
+  .splash-btn {
+    background: #fff;
+    color: var(--teal);
+    border: none;
+    border-radius: 50px;
+    padding: 16px 48px;
+    font-family: var(--font-h);
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .splash-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
+  .splash-tagline {
+    position: absolute; bottom: 50px; left: 0; right: 0;
+    text-align: center; color: rgba(255,255,255,0.6);
+    font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  /* ===================== SCREEN 2: HOME / FEED ===================== */
+  #s-home { background: var(--gray-1); }
+  .home-header {
+    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+    padding: 50px 20px 28px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .home-header::after {
+    content: '';
+    position: absolute; bottom: -20px; left: 0; right: 0;
+    height: 40px;
+    background: var(--gray-1);
+    border-radius: 50% 50% 0 0 / 30px 30px 0 0;
+  }
+  .home-header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+  .home-greeting { font-size: 13px; opacity: 0.8; margin-bottom: 2px; }
+  .home-name { font-size: 22px; font-weight: 900; }
+  .avatar-btn { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.25); border: 2px solid rgba(255,255,255,0.5); display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer; }
+  .home-stats-row { display: flex; gap: 10px; margin-top: 6px; }
+  .stat-chip { background: rgba(255,255,255,0.2); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 700; backdrop-filter: blur(4px); }
+  .stat-chip span { font-size: 15px; font-weight: 900; display: block; }
+
+  .feed-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 16px 100px;
+  }
+  .feed-scroll::-webkit-scrollbar { display: none; }
+
+  .section-title {
+    font-size: 13px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1.2px; color: var(--teal); margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .section-title a { font-size: 11px; color: var(--gray-4); text-decoration: none; font-weight: 600; }
+
+  /* Alert urgent card */
+  .alert-card {
+    background: linear-gradient(135deg, #E76F51, #c85e42);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    color: #fff;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    box-shadow: 0 6px 20px rgba(231,111,81,0.35);
+    cursor: pointer;
+  }
+  .alert-icon { font-size: 36px; }
+  .alert-text h3 { font-size: 15px; font-weight: 800; margin-bottom: 3px; }
+  .alert-text p { font-size: 12px; opacity: 0.88; line-height: 1.4; }
+  .alert-badge { background: rgba(255,255,255,0.25); border-radius: 10px; padding: 2px 8px; font-size: 10px; font-weight: 800; margin-top: 5px; display: inline-block; }
+
+  /* Horizontal scroll cards */
+  .h-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; margin: 0 -4px; }
+  .h-scroll::-webkit-scrollbar { display: none; }
+
+  .adopt-card {
+    min-width: 150px;
+    background: var(--white);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .adopt-card:hover { transform: translateY(-3px); }
+  .adopt-card-img {
+    height: 100px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 50px;
+  }
+  .adopt-card-body { padding: 10px; }
+  .adopt-card-body h4 { font-size: 14px; font-weight: 800; color: var(--text-main); }
+  .adopt-card-body p { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+  .adopt-card-badge {
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 20px; display: inline-block; margin-top: 5px;
+  }
+  .badge-adopt { background: #DCFCE7; color: #16A34A; }
+  .badge-temp  { background: var(--amber-light); color: #B45309; }
+  .badge-vet   { background: #EDE9FE; color: #7C3AED; }
+
+  /* Feed items */
+  .feed-item {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+  }
+  .feed-item:hover { box-shadow: var(--shadow-md); }
+  .feed-item-top { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; }
+  .feed-avatar { width: 36px; height: 36px; border-radius: 50%; display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0; }
+  .feed-meta h4 { font-size: 13px; font-weight: 800; color: var(--text-main); }
+  .feed-meta p { font-size: 11px; color: var(--text-sub); }
+  .feed-type {
+    margin-left: auto; font-size: 9px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.8px; padding: 3px 8px; border-radius: 20px;
+  }
+  .type-report { background: #FEE2E2; color: #DC2626; }
+  .type-adopt  { background: #DCFCE7; color: #16A34A; }
+  .type-info   { background: var(--teal-pale); color: var(--teal); }
+  .type-coord  { background: var(--amber-light); color: #B45309; }
+  .feed-content { font-size: 13px; color: var(--text-main); line-height: 1.5; margin-bottom: 8px; }
+  .feed-location { font-size: 11px; color: var(--text-sub); display: flex; align-items: center; gap: 4px; }
+  .feed-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .feed-btn {
+    flex: 1; padding: 8px; border-radius: 20px; border: none; cursor: pointer;
+    font-family: var(--font-h); font-size: 12px; font-weight: 700;
+    transition: all 0.15s;
+  }
+  .feed-btn-primary { background: var(--teal); color: #fff; }
+  .feed-btn-secondary { background: var(--gray-2); color: var(--gray-5); }
+  .feed-btn:hover { opacity: 0.9; transform: scale(0.98); }
+
+  /* ===================== SCREEN 3: REPORT ===================== */
+  #s-report { background: var(--gray-1); }
+  .report-header {
+    background: linear-gradient(135deg, var(--coral) 0%, #c85e42 100%);
+    padding: 50px 20px 28px;
+    color: #fff;
+    position: relative;
+  }
+  .report-header::after {
+    content: '';
+    position: absolute; bottom: -20px; left: 0; right: 0;
+    height: 40px;
+    background: var(--gray-1);
+    border-radius: 50% 50% 0 0 / 30px 30px 0 0;
+  }
+  .page-title { font-size: 24px; font-weight: 900; margin-bottom: 4px; }
+  .page-sub { font-size: 13px; opacity: 0.85; font-family: var(--font-b); font-style: italic; }
+
+  .form-scroll {
+    flex: 1; overflow-y: auto; padding: 28px 16px 100px;
+  }
+  .form-scroll::-webkit-scrollbar { display: none; }
+
+  .form-group { margin-bottom: 18px; }
+  .form-label {
+    font-size: 12px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--text-sub); margin-bottom: 7px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .form-input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 2px solid var(--gray-2);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-h);
+    font-size: 14px;
+    color: var(--text-main);
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: var(--coral); }
+  .form-textarea { resize: none; height: 90px; }
+  .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238FA4AA' stroke-width='2' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+
+  .photo-upload {
+    width: 100%; height: 100px;
+    border: 2px dashed var(--gray-3);
+    border-radius: var(--radius-sm);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px; cursor: pointer; transition: border-color 0.2s; background: var(--white);
+  }
+  .photo-upload:hover { border-color: var(--coral); }
+  .photo-upload span { font-size: 28px; }
+  .photo-upload p { font-size: 12px; color: var(--text-sub); font-weight: 600; }
+
+  .chips-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    padding: 7px 14px; border-radius: 20px;
+    border: 2px solid var(--gray-2);
+    font-size: 12px; font-weight: 700; color: var(--text-sub);
+    cursor: pointer; transition: all 0.15s;
+    background: var(--white);
+  }
+  .chip.selected { background: var(--coral); color: #fff; border-color: var(--coral); }
+  .chip:hover:not(.selected) { border-color: var(--coral); color: var(--coral); }
+
+  .urgency-bar { display: flex; gap: 0; border-radius: var(--radius-sm); overflow: hidden; border: 2px solid var(--gray-2); }
+  .urgency-opt {
+    flex: 1; padding: 10px 5px; text-align: center; cursor: pointer;
+    font-size: 11px; font-weight: 700; color: var(--text-sub); background: var(--white);
+    transition: all 0.15s;
+  }
+  .urgency-opt:not(:last-child) { border-right: 2px solid var(--gray-2); }
+  .urgency-opt.sel-low { background: #DCFCE7; color: #16A34A; }
+  .urgency-opt.sel-med { background: #FEF9C3; color: #CA8A04; }
+  .urgency-opt.sel-high { background: #FEE2E2; color: #DC2626; }
+
+  .submit-btn {
+    width: 100%; padding: 16px;
+    background: linear-gradient(135deg, var(--coral), #c85e42);
+    color: #fff; border: none; border-radius: var(--radius-md);
+    font-family: var(--font-h); font-size: 16px; font-weight: 800;
+    cursor: pointer; box-shadow: 0 6px 20px rgba(231,111,81,0.4);
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-top: 8px;
+  }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(231,111,81,0.5); }
+
+  /* ===================== SCREEN 4: ADOPCIONES ===================== */
+  #s-adopt { background: var(--gray-1); }
+  .adopt-header {
+    background: linear-gradient(135deg, #2C4A6E 0%, var(--navy) 100%);
+    padding: 50px 20px 28px;
+    color: #fff;
+    position: relative;
+  }
+  .adopt-header::after {
+    content: ''; position: absolute; bottom: -20px; left: 0; right: 0;
+    height: 40px; background: var(--gray-1);
+    border-radius: 50% 50% 0 0 / 30px 30px 0 0;
+  }
+
+  .search-bar {
+    display: flex; gap: 8px; margin-top: 14px;
+  }
+  .search-input {
+    flex: 1; padding: 11px 16px;
+    background: rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(255,255,255,0.3);
+    border-radius: 50px; color: #fff;
+    font-family: var(--font-h); font-size: 14px; outline: none;
+  }
+  .search-input::placeholder { color: rgba(255,255,255,0.6); }
+  .filter-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    border: 1.5px solid rgba(255,255,255,0.3);
+    color: #fff; font-size: 16px; cursor: pointer; display:flex;align-items:center;justify-content:center;
+  }
+
+  .adopt-scroll { flex: 1; overflow-y: auto; padding: 28px 16px 100px; }
+  .adopt-scroll::-webkit-scrollbar { display: none; }
+
+  .filter-tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; }
+  .filter-tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 7px 16px; border-radius: 20px;
+    border: none; font-family: var(--font-h); font-size: 12px; font-weight: 700;
+    cursor: pointer; white-space: nowrap;
+    background: var(--white); color: var(--text-sub);
+    box-shadow: var(--shadow-sm);
+  }
+  .tab.active { background: var(--navy); color: #fff; }
+
+  .dog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .dog-card {
+    background: var(--white); border-radius: var(--radius-md);
+    overflow: hidden; box-shadow: var(--shadow-sm);
+    cursor: pointer; transition: transform 0.2s;
+  }
+  .dog-card:hover { transform: translateY(-3px); }
+  .dog-card-img {
+    height: 110px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 56px;
+    position: relative;
+  }
+  .dog-card-fav {
+    position: absolute; top: 8px; right: 8px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(255,255,255,0.85); display:flex;align-items:center;justify-content:center;
+    font-size: 14px; cursor: pointer;
+  }
+  .dog-card-body { padding: 10px; }
+  .dog-card-body h4 { font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
+  .dog-card-body p { font-size: 11px; color: var(--text-sub); margin-bottom: 6px; }
+  .dog-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .dog-tag { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; background: var(--teal-pale); color: var(--teal); }
+
+  /* Dog detail overlay */
+  .dog-detail {
+    position: absolute; inset: 0; z-index: 20;
+    background: var(--white); display: none; flex-direction: column;
+    animation: slideUp 0.3s ease;
+  }
+  .dog-detail.open { display: flex; }
+  @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .detail-hero {
+    height: 260px;
+    background: linear-gradient(145deg, #E8F5F5, #CBEBEE);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 110px; position: relative;
+  }
+  .back-btn {
+    position: absolute; top: 50px; left: 16px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.85); border: none;
+    font-size: 18px; cursor: pointer; display:flex;align-items:center;justify-content:center;
+  }
+  .detail-scroll { flex: 1; overflow-y: auto; padding: 20px 16px 100px; }
+  .detail-scroll::-webkit-scrollbar { display: none; }
+  .detail-name { font-size: 28px; font-weight: 900; color: var(--text-main); }
+  .detail-sub { font-size: 13px; color: var(--text-sub); margin-bottom: 16px; display:flex;align-items:center;gap:6px; }
+  .detail-chips { display: flex; gap: 8px; margin-bottom: 16px; }
+  .detail-chip { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+  .detail-section { margin-bottom: 16px; }
+  .detail-section h3 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--teal); margin-bottom: 8px; }
+  .detail-section p { font-size: 14px; color: var(--text-main); line-height: 1.6; font-family: var(--font-b); }
+  .detail-traits { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .trait { background: var(--gray-1); border-radius: var(--radius-sm); padding: 10px; text-align: center; }
+  .trait .icon { font-size: 20px; margin-bottom: 4px; }
+  .trait .label { font-size: 11px; color: var(--text-sub); font-weight: 600; }
+  .trait .value { font-size: 13px; color: var(--text-main); font-weight: 800; }
+  .adopt-action-bar {
+    position: absolute; bottom: 80px; left: 0; right: 0;
+    padding: 12px 16px;
+    background: var(--white);
+    border-top: 1px solid var(--gray-2);
+    display: flex; gap: 10px;
+  }
+  .adopt-primary-btn {
+    flex: 1; padding: 14px; background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    color: #fff; border: none; border-radius: var(--radius-md);
+    font-family: var(--font-h); font-size: 15px; font-weight: 800; cursor: pointer;
+  }
+  .adopt-secondary-btn {
+    width: 50px; height: 50px; border-radius: var(--radius-md);
+    background: var(--gray-2); border: none; font-size: 22px; cursor: pointer;
+  }
+
+  /* ===================== SCREEN 5: COMUNIDAD ===================== */
+  #s-community { background: var(--gray-1); }
+  .community-header {
+    background: linear-gradient(135deg, var(--amber) 0%, #e8953b 100%);
+    padding: 50px 20px 28px;
+    color: #fff;
+    position: relative;
+  }
+  .community-header::after {
+    content: ''; position: absolute; bottom: -20px; left: 0; right: 0;
+    height: 40px; background: var(--gray-1);
+    border-radius: 50% 50% 0 0 / 30px 30px 0 0;
+  }
+
+  .community-scroll { flex: 1; overflow-y: auto; padding: 28px 16px 100px; }
+  .community-scroll::-webkit-scrollbar { display: none; }
+
+  .map-card {
+    background: var(--white); border-radius: var(--radius-md); overflow: hidden;
+    box-shadow: var(--shadow-sm); margin-bottom: 20px;
+  }
+  .map-visual {
+    height: 160px;
+    background: linear-gradient(135deg, #E8F5F5 0%, #C8E8EC 50%, #A8DBE2 100%);
+    position: relative; display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .map-grid {
+    position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 29px, rgba(2,128,144,0.1) 30px),
+                      repeating-linear-gradient(90deg, transparent, transparent 29px, rgba(2,128,144,0.1) 30px);
+  }
+  .map-pins { position: absolute; inset: 0; }
+  .map-pin {
+    position: absolute; font-size: 24px; cursor: pointer;
+    animation: bounce 2s ease-in-out infinite;
+  }
+  .map-pin:nth-child(2) { animation-delay: 0.4s; }
+  .map-pin:nth-child(3) { animation-delay: 0.8s; }
+  .map-pin:nth-child(4) { animation-delay: 1.2s; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)} }
+  .map-legend { font-size: 13px; font-weight: 700; color: var(--navy); z-index: 2; position: absolute; top: 10px; left: 12px; background: rgba(255,255,255,0.85); padding: 4px 10px; border-radius: 20px; }
+  .map-card-body { padding: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .map-card-body h4 { font-size: 14px; font-weight: 800; color: var(--text-main); }
+  .map-card-body p { font-size: 12px; color: var(--text-sub); }
+  .map-cta { background: var(--teal); color: #fff; border: none; border-radius: var(--radius-sm); padding: 8px 14px; font-family: var(--font-h); font-size: 12px; font-weight: 700; cursor: pointer; }
+
+  .volunteer-card {
+    background: var(--white); border-radius: var(--radius-md); padding: 14px;
+    box-shadow: var(--shadow-sm); margin-bottom: 12px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .vol-icon { width: 44px; height: 44px; border-radius: var(--radius-sm); display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0; }
+  .vol-body h4 { font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 3px; }
+  .vol-body p { font-size: 12px; color: var(--text-sub); line-height: 1.4; margin-bottom: 6px; }
+  .vol-meta { display: flex; gap: 8px; }
+  .vol-chip { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 10px; }
+
+  .tip-section { background: var(--white); border-radius: var(--radius-md); padding: 16px; box-shadow: var(--shadow-sm); }
+  .tip-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--gray-2); }
+  .tip-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .tip-num { width: 28px; height: 28px; border-radius: 50%; background: var(--teal-pale); color: var(--teal); font-size: 13px; font-weight: 900; display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+  .tip-text h4 { font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
+  .tip-text p { font-size: 12px; color: var(--text-sub); line-height: 1.4; }
+
+  /* ===================== SCREEN 6: PERFIL ===================== */
+  #s-profile { background: var(--gray-1); }
+  .profile-header {
+    background: linear-gradient(145deg, var(--navy) 0%, var(--navy-mid) 100%);
+    padding: 50px 20px 90px;
+    color: #fff; text-align: center; position: relative;
+  }
+  .profile-header::after {
+    content: ''; position: absolute; bottom: -20px; left: 0; right: 0;
+    height: 40px; background: var(--gray-1);
+    border-radius: 50% 50% 0 0 / 30px 30px 0 0;
+  }
+  .profile-avatar-lg {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); border: 3px solid rgba(255,255,255,0.5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; margin: 0 auto 12px;
+  }
+  .profile-name { font-size: 22px; font-weight: 900; margin-bottom: 4px; }
+  .profile-role-badge { display: inline-block; padding: 4px 14px; border-radius: 20px; background: rgba(255,255,255,0.2); font-size: 12px; font-weight: 700; }
+
+  .profile-scroll { flex: 1; overflow-y: auto; padding: 28px 16px 100px; }
+  .profile-scroll::-webkit-scrollbar { display: none; }
+
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .stat-card { background: var(--white); border-radius: var(--radius-md); padding: 14px 10px; text-align: center; box-shadow: var(--shadow-sm); }
+  .stat-card .num { font-size: 26px; font-weight: 900; color: var(--teal); }
+  .stat-card .lbl { font-size: 10px; font-weight: 600; color: var(--text-sub); margin-top: 2px; }
+
+  .menu-section { background: var(--white); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: 16px; }
+  .menu-item {
+    display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+    border-bottom: 1px solid var(--gray-2); cursor: pointer;
+    transition: background 0.15s;
+  }
+  .menu-item:last-child { border-bottom: none; }
+  .menu-item:hover { background: var(--gray-1); }
+  .menu-icon { font-size: 20px; width: 36px; height: 36px; border-radius: var(--radius-sm); display:flex;align-items:center;justify-content:center; }
+  .menu-text h4 { font-size: 14px; font-weight: 700; color: var(--text-main); }
+  .menu-text p { font-size: 11px; color: var(--text-sub); }
+  .menu-arrow { margin-left: auto; color: var(--gray-3); font-size: 16px; }
+
+  /* ===================== BOTTOM NAV ===================== */
+  .bottom-nav {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: var(--white);
+    border-top: 1px solid var(--gray-2);
+    display: flex; align-items: center; justify-content: space-around;
+    padding: 0 8px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+    z-index: 5;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 8px 12px; cursor: pointer; border-radius: var(--radius-sm);
+    transition: all 0.15s; border: none; background: none;
+    flex: 1;
+  }
+  .nav-item .nav-icon { font-size: 22px; position: relative; }
+  .nav-item .nav-label { font-size: 10px; font-weight: 700; color: var(--gray-4); font-family: var(--font-h); }
+  .nav-item.active .nav-label { color: var(--teal); }
+  .nav-badge {
+    position: absolute; top: -4px; right: -6px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--coral); color: #fff;
+    font-size: 9px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  /* FAB report button */
+  .nav-fab {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--coral), #c85e42);
+    border: none; font-size: 26px; color: #fff; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(231,111,81,0.45);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s;
+    flex-shrink: 0;
+  }
+  .nav-fab:hover { transform: scale(1.08); }
+
+  /* ===================== PREVIEW BANNER ===================== */
+  .preview-info {
+    margin-top: 16px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 16px;
+    padding: 12px 20px;
+    max-width: 375px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--gray-5);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .preview-info strong { color: var(--teal); }
+</style>
+</head>
+<body>
+
+<div class="proto-wrapper">
+
+  <!-- Screen selector -->
+  <div class="screen-nav">
+    <button onclick="showScreen('s-splash')" class="active" id="btn-s-splash">🐾 Splash</button>
+    <button onclick="showScreen('s-home')"   id="btn-s-home">🏠 Home</button>
+    <button onclick="showScreen('s-report')" id="btn-s-report">🚨 Reportar</button>
+    <button onclick="showScreen('s-adopt')"  id="btn-s-adopt">🐶 Adoptar</button>
+    <button onclick="showScreen('s-community')" id="btn-s-community">🤝 Comunidad</button>
+    <button onclick="showScreen('s-profile')"   id="btn-s-profile">👤 Perfil</button>
+  </div>
+
+  <!-- Phone frame -->
+  <div class="phone">
+
+    <!-- ===== SPLASH ===== -->
+    <div class="screen active" id="s-splash">
+      <div class="status-bar" style="color:rgba(255,255,255,0.8);">
+        <span class="time">9:41</span>
+        <div class="icons"><span>●●●</span><span>WiFi</span><span>🔋</span></div>
+      </div>
+      <div class="splash-bg-paws"></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;">
+        <div class="splash-content">
+          <div class="splash-logo">🐾</div>
+          <h1>PataSegura</h1>
+          <p>Conectamos quienes ayudan</p>
+          <button class="splash-btn" onclick="navTo('s-home')">Comenzar →</button>
+        </div>
+      </div>
+      <div class="splash-tagline">Juntos contra el abandono animal · Lima</div>
+    </div>
+
+    <!-- ===== HOME ===== -->
+    <div class="screen" id="s-home">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <div class="icons"><span>●●●</span><span>🔋</span></div>
+      </div>
+      <div class="home-header">
+        <div class="home-header-top">
+          <div>
+            <div class="home-greeting">Buenos días,</div>
+            <div class="home-name">Giannina 👋</div>
+          </div>
+          <button class="avatar-btn">👩</button>
+        </div>
+        <div class="home-stats-row">
+          <div class="stat-chip">🐶 <span>127</span>rescatados</div>
+          <div class="stat-chip">🏠 <span>43</span>hogares</div>
+          <div class="stat-chip">🌟 <span>89</span>activos</div>
+        </div>
+      </div>
+      <div class="feed-scroll">
+
+        <!-- Alert urgent -->
+        <div class="alert-card" onclick="navTo('s-report')">
+          <div class="alert-icon">🚨</div>
+          <div class="alert-text">
+            <h3>Caso urgente en San Isidro</h3>
+            <p>Perro herido en Av. Arequipa reportado hace 15 min</p>
+            <span class="alert-badge">⚡ Ver ahora</span>
+          </div>
+        </div>
+
+        <!-- Adopciones -->
+        <div class="section-title">En adopción cerca <a href="#" onclick="navTo('s-adopt');return false;">Ver todos →</a></div>
+        <div class="h-scroll" style="margin-bottom:20px;">
+          <div class="adopt-card" onclick="navTo('s-adopt')">
+            <div class="adopt-card-img" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">🦮</div>
+            <div class="adopt-card-body">
+              <h4>Max</h4>
+              <p>3 años · Macho</p>
+              <span class="adopt-card-badge badge-adopt">Adoptar</span>
+            </div>
+          </div>
+          <div class="adopt-card" onclick="navTo('s-adopt')">
+            <div class="adopt-card-img" style="background:linear-gradient(135deg,#E8F5F5,#C8E8EC);">🐕</div>
+            <div class="adopt-card-body">
+              <h4>Luna</h4>
+              <p>1 año · Hembra</p>
+              <span class="adopt-card-badge badge-adopt">Adoptar</span>
+            </div>
+          </div>
+          <div class="adopt-card" onclick="navTo('s-adopt')">
+            <div class="adopt-card-img" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);">🐩</div>
+            <div class="adopt-card-body">
+              <h4>Coco</h4>
+              <p>Cachorro · M</p>
+              <span class="adopt-card-badge badge-temp">Temporal</span>
+            </div>
+          </div>
+          <div class="adopt-card" onclick="navTo('s-adopt')">
+            <div class="adopt-card-img" style="background:linear-gradient(135deg,#FEE2E2,#FECACA);">🦴</div>
+            <div class="adopt-card-body">
+              <h4>Rocky</h4>
+              <p>5 años · Macho</p>
+              <span class="adopt-card-badge badge-vet">Vet. Gratis</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feed items -->
+        <div class="section-title">Actividad en tu zona</div>
+
+        <div class="feed-item">
+          <div class="feed-item-top">
+            <div class="feed-avatar" style="background:#DCFCE7;">🌿</div>
+            <div class="feed-meta">
+              <h4>Stefany R.</h4>
+              <p>Cuidadora · Miraflores</p>
+            </div>
+            <span class="feed-type type-coord">Coordinación</span>
+          </div>
+          <div class="feed-content">Organizando colecta para veterinario comunitario sábado. ¡Necesitamos voluntarios! 🐾</div>
+          <div class="feed-location">📍 Parque Kennedy, Miraflores · hace 1h</div>
+          <div class="feed-actions">
+            <button class="feed-btn feed-btn-primary">Sumarme</button>
+            <button class="feed-btn feed-btn-secondary">Donar</button>
+          </div>
+        </div>
+
+        <div class="feed-item">
+          <div class="feed-item-top">
+            <div class="feed-avatar" style="background:#FEE2E2;">🚨</div>
+            <div class="feed-meta">
+              <h4>André M.</h4>
+              <p>Vecino · Chorrillos</p>
+            </div>
+            <span class="feed-type type-report">Reporte</span>
+          </div>
+          <div class="feed-content">Perro con herida en pata trasera, lleva 3 días en la misma zona. Necesita atención veterinaria.</div>
+          <div class="feed-location">📍 Av. Huaylas, Chorrillos · hace 2h</div>
+          <div class="feed-actions">
+            <button class="feed-btn feed-btn-primary">Ayudar</button>
+            <button class="feed-btn feed-btn-secondary">Ver mapa</button>
+          </div>
+        </div>
+
+        <div class="feed-item">
+          <div class="feed-item-top">
+            <div class="feed-avatar" style="background:var(--teal-pale);">📚</div>
+            <div class="feed-meta">
+              <h4>PataSegura</h4>
+              <p>Información oficial</p>
+            </div>
+            <span class="feed-type type-info">Info</span>
+          </div>
+          <div class="feed-content">💡 ¿Sabías que más del 90% de perros callejeros en Lima tienen dueño? Conoce cómo denunciar abandono responsablemente.</div>
+          <div class="feed-actions">
+            <button class="feed-btn feed-btn-primary">Leer más</button>
+          </div>
+        </div>
+      </div>
+      <!-- Bottom nav -->
+      <div class="bottom-nav">
+        <button class="nav-item active" onclick="navTo('s-home')">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Inicio</span>
+        </button>
+        <button class="nav-item" onclick="navTo('s-adopt')">
+          <span class="nav-icon">🐶</span>
+          <span class="nav-label">Adoptar</span>
+        </button>
+        <button class="nav-fab" onclick="navTo('s-report')">🚨</button>
+        <button class="nav-item" onclick="navTo('s-community')">
+          <span class="nav-icon">🤝</span>
+          <span class="nav-label">Comunidad</span>
+        </button>
+        <button class="nav-item" onclick="navTo('s-profile')">
+          <span class="nav-icon">👤</span>
+          <span class="nav-label">Perfil</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== REPORT ===== -->
+    <div class="screen" id="s-report">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <div class="icons"><span>🔋</span></div>
+      </div>
+      <div class="report-header">
+        <div class="page-title">📍 Reportar Caso</div>
+        <div class="page-sub">Ayúdanos a ubicar un perro que necesita ayuda</div>
+      </div>
+      <div class="form-scroll">
+
+        <div class="form-group">
+          <div class="form-label">📷 Foto del perro</div>
+          <div class="photo-upload">
+            <span>📸</span>
+            <p>Toca para subir una foto</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">📍 Ubicación</div>
+          <input class="form-input" type="text" placeholder="Av. Arequipa 2345, Miraflores">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">🐶 Estado del perro</div>
+          <div class="chips-row">
+            <span class="chip" onclick="toggleChip(this)">Herido</span>
+            <span class="chip selected" onclick="toggleChip(this)">Desnutrido</span>
+            <span class="chip" onclick="toggleChip(this)">Enfermo</span>
+            <span class="chip" onclick="toggleChip(this)">Asustado</span>
+            <span class="chip" onclick="toggleChip(this)">Con collar</span>
+            <span class="chip" onclick="toggleChip(this)">Agresivo</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">⚡ Nivel de urgencia</div>
+          <div class="urgency-bar">
+            <div class="urgency-opt sel-low" onclick="selectUrgency(this,'sel-low')">Baja</div>
+            <div class="urgency-opt" onclick="selectUrgency(this,'sel-med')">Media</div>
+            <div class="urgency-opt" onclick="selectUrgency(this,'sel-high')">Alta</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">📝 Descripción del caso</div>
+          <textarea class="form-input form-textarea" placeholder="Describe la situación del perro, cuánto tiempo lleva en el lugar, comportamiento..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">🤝 ¿Qué tipo de ayuda necesita?</div>
+          <div class="chips-row">
+            <span class="chip selected" onclick="toggleChip(this)">Veterinario</span>
+            <span class="chip" onclick="toggleChip(this)">Alimento</span>
+            <span class="chip" onclick="toggleChip(this)">Hogar temporal</span>
+            <span class="chip" onclick="toggleChip(this)">Rescate</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">📞 Tu contacto (opcional)</div>
+          <input class="form-input" type="text" placeholder="+51 999 999 999">
+        </div>
+
+        <button class="submit-btn" onclick="alert('✅ ¡Reporte enviado! La comunidad ha sido notificada.')">
+          🚨 Enviar Reporte
+        </button>
+      </div>
+      <div class="bottom-nav">
+        <button class="nav-item" onclick="navTo('s-home')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></button>
+        <button class="nav-item" onclick="navTo('s-adopt')"><span class="nav-icon">🐶</span><span class="nav-label">Adoptar</span></button>
+        <button class="nav-fab" style="background:linear-gradient(135deg,#028090,#02A896);">🐾</button>
+        <button class="nav-item" onclick="navTo('s-community')"><span class="nav-icon">🤝</span><span class="nav-label">Comunidad</span></button>
+        <button class="nav-item" onclick="navTo('s-profile')"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></button>
+      </div>
+    </div>
+
+    <!-- ===== ADOPT ===== -->
+    <div class="screen" id="s-adopt">
+      <div class="status-bar" style="color:#fff;">
+        <span class="time">9:41</span>
+        <div class="icons"><span>🔋</span></div>
+      </div>
+      <div class="adopt-header">
+        <div class="page-title">Encuentra tu Compañero</div>
+        <div class="page-sub" style="font-family:var(--font-b);font-style:italic;font-size:13px;opacity:0.85;margin-top:4px;">Adoptar es dar una segunda oportunidad</div>
+        <div class="search-bar">
+          <input class="search-input" placeholder="Buscar por nombre, raza, zona...">
+          <button class="filter-btn">⚙️</button>
+        </div>
+      </div>
+      <div class="adopt-scroll">
+        <div class="filter-tabs">
+          <button class="tab active">Todos</button>
+          <button class="tab" onclick="swapTab(this)">Cachorros</button>
+          <button class="tab" onclick="swapTab(this)">Adultos</button>
+          <button class="tab" onclick="swapTab(this)">Hogar temp.</button>
+          <button class="tab" onclick="swapTab(this)">Urgente</button>
+        </div>
+        <div class="dog-grid">
+          <div class="dog-card" onclick="openDetail('max')">
+            <div class="dog-card-img" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">
+              🦮
+              <div class="dog-card-fav">❤️</div>
+            </div>
+            <div class="dog-card-body">
+              <h4>Max</h4>
+              <p>3 años · Los Olivos</p>
+              <div class="dog-tags">
+                <span class="dog-tag">Juguetón</span>
+                <span class="dog-tag">Esterilizado</span>
+              </div>
+            </div>
+          </div>
+          <div class="dog-card" onclick="openDetail('luna')">
+            <div class="dog-card-img" style="background:linear-gradient(135deg,#E8F5F5,#C8E8EC);">
+              🐕
+              <div class="dog-card-fav">🤍</div>
+            </div>
+            <div class="dog-card-body">
+              <h4>Luna</h4>
+              <p>1 año · Miraflores</p>
+              <div class="dog-tags">
+                <span class="dog-tag">Tierna</span>
+                <span class="dog-tag">Vacunada</span>
+              </div>
+            </div>
+          </div>
+          <div class="dog-card" onclick="openDetail('coco')">
+            <div class="dog-card-img" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);">
+              🐩
+              <div class="dog-card-fav">🤍</div>
+            </div>
+            <div class="dog-card-body">
+              <h4>Coco</h4>
+              <p>3 meses · Surco</p>
+              <div class="dog-tags">
+                <span class="dog-tag">Cachorro</span>
+                <span class="dog-tag">Activo</span>
+              </div>
+            </div>
+          </div>
+          <div class="dog-card" onclick="openDetail('rocky')">
+            <div class="dog-card-img" style="background:linear-gradient(135deg,#FEE2E2,#FECACA);">
+              🦴
+              <div class="dog-card-fav">🤍</div>
+            </div>
+            <div class="dog-card-body">
+              <h4>Rocky</h4>
+              <p>5 años · Chorrillos</p>
+              <div class="dog-tags">
+                <span class="dog-tag">Leal</span>
+                <span class="dog-tag">Mayor</span>
+              </div>
+            </div>
+          </div>
+          <div class="dog-card" onclick="openDetail('bella')">
+            <div class="dog-card-img" style="background:linear-gradient(135deg,#DCFCE7,#BBF7D0);">
+              🐾
+              <div class="dog-card-fav">🤍</div>
+            </div>
+            <div class="dog-card-body">
+              <h4>Bella</h4>
+              <p>2 años · SMP</p>
+              <div class="dog-tags">
+                <span class="dog-tag">Tranquila</span>
+              </div>
+            </div>
+          </div>
+          <div class="dog-card" onclick="openDetail('toby')">
+            <div class="dog-card-img" style="background:linear-gradient(135deg,#FEF9C3,#FEF08A);">
+              🐕‍🦺
+              <div class="dog-card-fav">🤍</div>
+            </div>
+            <div class="dog-card-body">
+              <h4>Toby</h4>
+              <p>4 años · La Molina</p>
+              <div class="dog-tags">
+                <span class="dog-tag">Urgente</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dog Detail Overlay -->
+      <div class="dog-detail" id="dog-detail">
+        <div class="detail-hero" id="detail-hero">
+          🦮
+          <button class="back-btn" onclick="closeDetail()">←</button>
+        </div>
+        <div class="detail-scroll">
+          <div id="detail-name" class="detail-name">Max</div>
+          <div class="detail-sub">📍 <span id="detail-loc">Los Olivos</span> · <span id="detail-age">3 años · Macho</span></div>
+          <div class="detail-chips">
+            <span class="detail-chip badge-adopt" id="detail-status">En adopción</span>
+            <span class="detail-chip" style="background:var(--teal-pale);color:var(--teal);" id="detail-size">Mediano</span>
+          </div>
+          <div class="detail-traits">
+            <div class="trait"><div class="icon">💉</div><div class="label">Vacunas</div><div class="value">Al día</div></div>
+            <div class="trait"><div class="icon">✂️</div><div class="label">Esterilizado</div><div class="value" id="detail-ste">Sí</div></div>
+            <div class="trait"><div class="icon">🐾</div><div class="label">Carácter</div><div class="value" id="detail-char">Amigable</div></div>
+            <div class="trait"><div class="icon">🏠</div><div class="label">Casa</div><div class="value">Con patio</div></div>
+          </div>
+          <div class="detail-section" style="margin-top:14px;">
+            <h3>Historia</h3>
+            <p id="detail-story">Max fue encontrado en un parque de Los Olivos hace 6 meses. A pesar de su pasado difícil, es un perro alegre y cariñoso que se lleva bien con niños. Busca una familia que le dé el amor que merece.</p>
+          </div>
+          <div class="detail-section">
+            <h3>Contacto rescatista</h3>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--gray-1);padding:10px;border-radius:var(--radius-sm);">
+              <span style="font-size:28px;">👩</span>
+              <div>
+                <div style="font-size:13px;font-weight:800;color:var(--text-main);">Giannina F.</div>
+                <div style="font-size:11px;color:var(--text-sub);">Rescatista activa · Los Olivos</div>
+              </div>
+              <button style="margin-left:auto;background:var(--teal);color:#fff;border:none;border-radius:10px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">Chat</button>
+            </div>
+          </div>
+        </div>
+        <div class="adopt-action-bar">
+          <button class="adopt-primary-btn" onclick="alert('¡Solicitud enviada! Giannina te contactará pronto 🐾')">Solicitar Adopción</button>
+          <button class="adopt-secondary-btn">🏠</button>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <button class="nav-item" onclick="navTo('s-home')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></button>
+        <button class="nav-item active"><span class="nav-icon">🐶</span><span class="nav-label">Adoptar</span></button>
+        <button class="nav-fab" onclick="navTo('s-report')">🚨</button>
+        <button class="nav-item" onclick="navTo('s-community')"><span class="nav-icon">🤝</span><span class="nav-label">Comunidad</span></button>
+        <button class="nav-item" onclick="navTo('s-profile')"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></button>
+      </div>
+    </div>
+
+    <!-- ===== COMUNIDAD ===== -->
+    <div class="screen" id="s-community">
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <div class="icons"><span>🔋</span></div>
+      </div>
+      <div class="community-header">
+        <div class="page-title">🤝 Comunidad</div>
+        <div class="page-sub" style="font-family:var(--font-b);font-style:italic;font-size:13px;opacity:0.85;margin-top:4px;">Organiza, conecta y actúa en tu zona</div>
+      </div>
+      <div class="community-scroll">
+
+        <!-- Mapa -->
+        <div class="section-title">Mapa de reportes activos</div>
+        <div class="map-card" style="margin-bottom:20px;">
+          <div class="map-visual">
+            <div class="map-grid"></div>
+            <span class="map-legend">📍 Lima Metropolitana</span>
+            <div class="map-pins">
+              <div class="map-pin" style="top:30%;left:45%;">🚨</div>
+              <div class="map-pin" style="top:55%;left:30%;">🐾</div>
+              <div class="map-pin" style="top:40%;left:65%;">🐾</div>
+              <div class="map-pin" style="top:65%;left:55%;">🚨</div>
+            </div>
+          </div>
+          <div class="map-card-body">
+            <div>
+              <h4>14 casos activos</h4>
+              <p>En los últimos 7 días</p>
+            </div>
+            <button class="map-cta">Ver mapa</button>
+          </div>
+        </div>
+
+        <!-- Voluntariado -->
+        <div class="section-title">Actividades voluntarias</div>
+
+        <div class="volunteer-card">
+          <div class="vol-icon" style="background:#DCFCE7;">🏥</div>
+          <div class="vol-body">
+            <h4>Jornada veterinaria gratuita</h4>
+            <p>Vacunación y desparasitación comunitaria en Miraflores. Cupos limitados.</p>
+            <div class="vol-meta">
+              <span class="vol-chip" style="background:var(--teal-pale);color:var(--teal);">📅 Sáb 10 May</span>
+              <span class="vol-chip" style="background:#FEF9C3;color:#CA8A04;">👥 12 inscritos</span>
+            </div>
+          </div>
+          <button style="margin-left:auto;background:var(--teal);color:#fff;border:none;border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;align-self:center;" onclick="alert('¡Te has inscrito! 🎉')">Unirme</button>
+        </div>
+
+        <div class="volunteer-card">
+          <div class="vol-icon" style="background:var(--amber-light);">📦</div>
+          <div class="vol-body">
+            <h4>Colecta de alimentos</h4>
+            <p>Juntamos comida y medicinas para el albergue de Los Olivos. Dona lo que puedas.</p>
+            <div class="vol-meta">
+              <span class="vol-chip" style="background:var(--teal-pale);color:var(--teal);">📅 Todo el mes</span>
+              <span class="vol-chip" style="background:#FEE2E2;color:#DC2626;">⚡ Urgente</span>
+            </div>
+          </div>
+          <button style="margin-left:auto;background:var(--amber);color:#fff;border:none;border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;align-self:center;" onclick="alert('¡Gracias por donar! 🙏')">Donar</button>
+        </div>
+
+        <div class="volunteer-card">
+          <div class="vol-icon" style="background:#EDE9FE;">📢</div>
+          <div class="vol-body">
+            <h4>Campaña de concientización</h4>
+            <p>Ayuda a distribuir volantes sobre tenencia responsable en tu barrio.</p>
+            <div class="vol-meta">
+              <span class="vol-chip" style="background:var(--teal-pale);color:var(--teal);">📅 Dom 11 May</span>
+              <span class="vol-chip" style="background:#FEF9C3;color:#CA8A04;">👥 6 inscritos</span>
+            </div>
+          </div>
+          <button style="margin-left:auto;background:#7C3AED;color:#fff;border:none;border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;align-self:center;">Unirme</button>
+        </div>
+
+        <!-- Tips tenencia responsable -->
+        <div class="section-title" style="margin-top:8px;">Tenencia responsable</div>
+        <div class="tip-section">
+          <div class="tip-item">
+            <div class="tip-num">1</div>
+            <div class="tip-text">
+              <h4>Esteriliza a tu mascota</h4>
+              <p>Evita camadas no deseadas que terminan en abandono. Busca clínicas municipales gratuitas.</p>
+            </div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-num">2</div>
+            <div class="tip-text">
+              <h4>Mantén su identificación</h4>
+              <p>Coloca un collar con tus datos. En caso de extravío, facilita el reencuentro.</p>
+            </div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-num">3</div>
+            <div class="tip-text">
+              <h4>Reporta el abandono</h4>
+              <p>Si ves a alguien abandonar un perro, puedes reportarlo a la municipalidad. En PataSegura te ayudamos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <button class="nav-item" onclick="navTo('s-home')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></button>
+        <button class="nav-item" onclick="navTo('s-adopt')"><span class="nav-icon">🐶</span><span class="nav-label">Adoptar</span></button>
+        <button class="nav-fab" onclick="navTo('s-report')">🚨</button>
+        <button class="nav-item active"><span class="nav-icon">🤝</span><span class="nav-label">Comunidad</span></button>
+        <button class="nav-item" onclick="navTo('s-profile')"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></button>
+      </div>
+    </div>
+
+    <!-- ===== PERFIL ===== -->
+    <div class="screen" id="s-profile">
+      <div class="status-bar" style="color:#fff;">
+        <span class="time">9:41</span>
+        <div class="icons"><span>🔋</span></div>
+      </div>
+      <div class="profile-header">
+        <div class="profile-avatar-lg">👩</div>
+        <div class="profile-name">Giannina Floreano</div>
+        <span class="profile-role-badge">🐾 Rescatista Activa</span>
+      </div>
+      <div class="profile-scroll">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="num">23</div><div class="lbl">Rescates</div></div>
+          <div class="stat-card"><div class="num">8</div><div class="lbl">Adoptados</div></div>
+          <div class="stat-card"><div class="num">47</div><div class="lbl">Reportes</div></div>
+        </div>
+
+        <div class="section-title">Mi actividad</div>
+        <div class="menu-section">
+          <div class="menu-item">
+            <div class="menu-icon" style="background:#DCFCE7;">🐶</div>
+            <div class="menu-text"><h4>Mis casos reportados</h4><p>7 activos · 40 resueltos</p></div>
+            <span class="menu-arrow">›</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-icon" style="background:var(--teal-pale);">🏠</div>
+            <div class="menu-text"><h4>Perros en mi cuidado</h4><p>2 en hogar temporal</p></div>
+            <span class="menu-arrow">›</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-icon" style="background:var(--amber-light);">🤝</div>
+            <div class="menu-text"><h4>Actividades voluntarias</h4><p>3 próximas</p></div>
+            <span class="menu-arrow">›</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-icon" style="background:#EDE9FE;">❤️</div>
+            <div class="menu-text"><h4>Favoritos</h4><p>5 perritos guardados</p></div>
+            <span class="menu-arrow">›</span>
+          </div>
+        </div>
+
+        <div class="section-title">Configuración</div>
+        <div class="menu-section">
+          <div class="menu-item">
+            <div class="menu-icon" style="background:var(--gray-2);">🔔</div>
+            <div class="menu-text"><h4>Notificaciones</h4><p>Casos en mi zona activadas</p></div>
+            <span class="menu-arrow">›</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-icon" style="background:var(--gray-2);">📍</div>
+            <div class="menu-text"><h4>Mi zona de acción</h4><p>Los Olivos, Independencia</p></div>
+            <span class="menu-arrow">›</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-icon" style="background:var(--gray-2);">👤</div>
+            <div class="menu-text"><h4>Editar perfil</h4><p>Foto, datos, rol</p></div>
+            <span class="menu-arrow">›</span>
+          </div>
+          <div class="menu-item">
+            <div class="menu-icon" style="background:#FEE2E2;">🚪</div>
+            <div class="menu-text"><h4 style="color:#DC2626;">Cerrar sesión</h4><p>Hasta pronto</p></div>
+            <span class="menu-arrow">›</span>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <button class="nav-item" onclick="navTo('s-home')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></button>
+        <button class="nav-item" onclick="navTo('s-adopt')"><span class="nav-icon">🐶</span><span class="nav-label">Adoptar</span></button>
+        <button class="nav-fab" onclick="navTo('s-report')">🚨</button>
+        <button class="nav-item" onclick="navTo('s-community')"><span class="nav-icon">🤝</span><span class="nav-label">Comunidad</span></button>
+        <button class="nav-item active"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></button>
+      </div>
+    </div>
+
+  </div><!-- end phone -->
+
+  <div class="preview-info">
+    <strong>6 pantallas navegables</strong> · Toca los botones del menú superior o navega dentro del app<br>
+    Optimizado para export con <strong>Anima → Figma</strong> · 375×812px (iPhone 14 Pro)
+  </div>
+</div>
+
+<script>
+  // Screen navigation
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.screen-nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.getElementById('btn-' + id).classList.add('active');
+    // Close dog detail if switching away
+    const detail = document.getElementById('dog-detail');
+    if (detail) detail.classList.remove('open');
+  }
+
+  function navTo(id) {
+    showScreen(id);
+  }
+
+  // Form interactions
+  function toggleChip(el) {
+    el.classList.toggle('selected');
+  }
+
+  function selectUrgency(el, cls) {
+    const bar = el.parentElement;
+    bar.querySelectorAll('.urgency-opt').forEach(o => o.className = 'urgency-opt');
+    el.classList.add(cls);
+  }
+
+  function swapTab(el) {
+    el.closest('.filter-tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // Dog detail
+  const dogs = {
+    max:   { name:'Max',   emoji:'🦮', loc:'Los Olivos', age:'3 años · Macho', bg:'linear-gradient(135deg,#FEF3C7,#FDE68A)', size:'Mediano', ste:'Sí', char:'Juguetón', story:'Max fue encontrado en un parque de Los Olivos hace 6 meses. A pesar de su pasado difícil, es un perro alegre y cariñoso que se lleva bien con niños. Busca una familia que le dé el amor que merece.' },
+    luna:  { name:'Luna',  emoji:'🐕', loc:'Miraflores',  age:'1 año · Hembra', bg:'linear-gradient(135deg,#E8F5F5,#C8E8EC)', size:'Pequeño', ste:'Sí', char:'Tierna',   story:'Luna llegó al albergue desnutrida pero recuperó su energía rápidamente. Es muy cariñosa y le encanta jugar. Ideal para familias con niños o personas solteras.' },
+    coco:  { name:'Coco',  emoji:'🐩', loc:'Surco',       age:'3 meses · Macho', bg:'linear-gradient(135deg,#EDE9FE,#DDD6FE)', size:'Pequeño', ste:'No', char:'Activo',   story:'Coco es un cachorro que fue encontrado abandonado en una bolsa en Surco. Está sano, vacunado y listo para encontrar su hogar para siempre.' },
+    rocky: { name:'Rocky', emoji:'🦴', loc:'Chorrillos',  age:'5 años · Macho', bg:'linear-gradient(135deg,#FEE2E2,#FECACA)', size:'Grande',  ste:'Sí', char:'Leal',     story:'Rocky es el perro que todos los rescatistas describen como \"el más leal\". Lleva 2 años en el albergue esperando una familia. Necesita un hogar con espacio y mucho amor.' },
+    bella: { name:'Bella', emoji:'🐾', loc:'SMP',         age:'2 años · Hembra', bg:'linear-gradient(135deg,#DCFCE7,#BBF7D0)', size:'Mediano', ste:'Sí', char:'Tranquila', story:'Bella es ideal para personas que buscan una compañía calmada. Le encanta pasear y dormir al sol. Excelente con adultos mayores.' },
+    toby:  { name:'Toby',  emoji:'🐕‍🦺', loc:'La Molina', age:'4 años · Macho', bg:'linear-gradient(135deg,#FEF9C3,#FEF08A)', size:'Grande',  ste:'Sí', char:'Enérgico',  story:'Toby necesita hogar URGENTE. El albergue está al límite de capacidad. Es un perro muy inteligente, ideal para familias activas con espacio exterior.' },
+  };
+
+  function openDetail(id) {
+    const d = dogs[id];
+    document.getElementById('detail-hero').style.background = d.bg;
+    document.getElementById('detail-hero').querySelector('button').previousSibling.textContent = '';
+    document.getElementById('detail-hero').childNodes[0].textContent = d.emoji;
+    document.getElementById('detail-name').textContent = d.name;
+    document.getElementById('detail-loc').textContent = d.loc;
+    document.getElementById('detail-age').textContent = d.age;
+    document.getElementById('detail-size').textContent = d.size;
+    document.getElementById('detail-ste').textContent = d.ste;
+    document.getElementById('detail-char').textContent = d.char;
+    document.getElementById('detail-story').textContent = d.story;
+    const hero = document.getElementById('detail-hero');
+    // Set emoji properly
+    hero.innerHTML = d.emoji + '<button class="back-btn" onclick="closeDetail()">←</button>';
+    document.getElementById('dog-detail').classList.add('open');
+  }
+
+  function closeDetail() {
+    document.getElementById('dog-detail').classList.remove('open');
+  }
+</script>
+</body>
+</html>
